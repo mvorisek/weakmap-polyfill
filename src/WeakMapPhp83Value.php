@@ -69,6 +69,15 @@ if (\PHP_VERSION_ID < 8_03_00) {
                 );
             } else {
                 $this->destroy();
+//                if ($key !== null) {
+//                    $weakMap->offsetUnset($key); // run housekeeping
+//                }
+//
+//                var_dump($key);
+//
+//                if ($key !== null) {
+//                var_dump($weakMap->offsetExists($key));
+//                }
             }
         }
 
