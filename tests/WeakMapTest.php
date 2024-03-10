@@ -2,13 +2,22 @@
 
 declare(strict_types=1);
 
+use Brick\WeakmapPolyfill\WeakMapPhp83;
 use PHPUnit\Framework\TestCase;
 
 class WeakMapTest extends TestCase
 {
+    /**
+     * @return \WeakMap<object, mixed>|WeakMapPhp83<object, mixed>
+     */
+    protected function createWeakMap() : object
+    {
+        return new WeakMap();
+    }
+
     public function testArrayAccess() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $a = new stdClass;
         $b = new stdClass;
@@ -32,7 +41,7 @@ class WeakMapTest extends TestCase
 
     public function testArrayAccessWithNull() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $a = new stdClass;
 
@@ -43,7 +52,7 @@ class WeakMapTest extends TestCase
 
     public function testReusedObjectId() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $a = new stdClass;
         $b = new stdClass;
@@ -66,7 +75,7 @@ class WeakMapTest extends TestCase
 
     public function testAccessingUnknownObjectThrowsError() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $a = new stdClass;
 
@@ -76,7 +85,7 @@ class WeakMapTest extends TestCase
 
     public function testAccessingObjectWithReusedIdThrowsError() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $k = new stdClass;
         $v = new stdClass;
@@ -94,7 +103,7 @@ class WeakMapTest extends TestCase
 
     public function testCount() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $a = new stdClass;
         $b = new stdClass;
@@ -116,7 +125,7 @@ class WeakMapTest extends TestCase
 
     public function testDataIsDestroyedWhenObjectIsRemoved() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $k = new stdClass;
         $v = new stdClass;
@@ -142,7 +151,7 @@ class WeakMapTest extends TestCase
 
     public function testDataIsDestroyedWhenObjectIsGarbageCollected() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $k = new stdClass;
         $v = new stdClass;
@@ -168,7 +177,7 @@ class WeakMapTest extends TestCase
 
     public function testTraversable() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $a = new stdClass;
         $b = new stdClass;
@@ -192,7 +201,7 @@ class WeakMapTest extends TestCase
 
     public function testHousekeeping() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $k = new stdClass;
         $v = new stdClass;
@@ -218,7 +227,7 @@ class WeakMapTest extends TestCase
     public function testHousekeepingOnGcRun(?WeakMap $weakMap = null) : void
     {
         if ($weakMap === null) {
-            $weakMap = new WeakMap();
+            $weakMap = $this->createWeakMap();
         }
 
         $k = new stdClass;
@@ -240,7 +249,7 @@ class WeakMapTest extends TestCase
 
     public function testNoInternalCycle() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
         $rWeakMap = WeakReference::create($weakMap);
 
         $k = new stdClass;
@@ -261,7 +270,7 @@ class WeakMapTest extends TestCase
 
     public function testHousekeepingOnGcRunSurvival() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         $vkPairs = [];
         for ($i = 100; $i > 0; $i--) {
@@ -289,7 +298,7 @@ class WeakMapTest extends TestCase
 
     public function testKeyMustBeObjectToSet() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         self::expectException(TypeError::class);
         self::expectExceptionMessage('WeakMap key must be an object');
@@ -298,7 +307,7 @@ class WeakMapTest extends TestCase
 
     public function testKeyMustBeObjectToGet() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         self::expectException(TypeError::class);
         self::expectExceptionMessage('WeakMap key must be an object');
@@ -307,7 +316,7 @@ class WeakMapTest extends TestCase
 
     public function testKeyMustBeObjectToIsset() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         self::expectException(TypeError::class);
         self::expectExceptionMessage('WeakMap key must be an object');
@@ -316,7 +325,7 @@ class WeakMapTest extends TestCase
 
     public function testKeyMustBeObjectToUnset() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         self::expectException(TypeError::class);
         self::expectExceptionMessage('WeakMap key must be an object');
@@ -325,7 +334,7 @@ class WeakMapTest extends TestCase
 
     public function testCantAppend() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         self::expectException(Error::class);
         self::expectExceptionMessage('Cannot append to WeakMap');
@@ -334,7 +343,7 @@ class WeakMapTest extends TestCase
 
     public function testCantDeepAppend() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
 
         self::expectException(Error::class);
         self::expectExceptionMessage('Cannot append to WeakMap');
@@ -343,7 +352,7 @@ class WeakMapTest extends TestCase
 
     public function testCantSetDynamicProperty() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
         self::expectException(Error::class);
         self::expectExceptionMessage('Cannot create dynamic property WeakMap::$abc');
         $weakMap->abc = 123;
@@ -351,7 +360,7 @@ class WeakMapTest extends TestCase
 
     public function testCantSerialize() : void
     {
-        $weakMap = new WeakMap();
+        $weakMap = $this->createWeakMap();
         self::expectException(Exception::class);
         self::expectExceptionMessage("Serialization of 'WeakMap' is not allowed");
         serialize($weakMap);
