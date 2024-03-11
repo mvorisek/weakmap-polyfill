@@ -172,6 +172,9 @@ class WeakMapTest extends TestCase
         unset($k);
 
         self::assertSame(0, $weakMap->count());
+        if ($this->createWeakMap() instanceof WeakMapPhp83) {
+            gc_collect_cycles();
+        }
         self::assertNull($r->get());
     }
 
@@ -221,10 +224,13 @@ class WeakMapTest extends TestCase
             }
         }
 
+        if ($this->createWeakMap() instanceof WeakMapPhp83) {
+            gc_collect_cycles();
+        }
         self::assertNull($r->get());
     }
 
-    public function testHousekeepingOnGcRun(?WeakMap $weakMap = null) : void
+    public function testHousekeepingOnGcRun(?object $weakMap = null) : void
     {
         if ($weakMap === null) {
             $weakMap = $this->createWeakMap();
@@ -265,6 +271,9 @@ class WeakMapTest extends TestCase
 
         self::assertNull($rWeakMap->get());
         self::assertNull($rK->get());
+        if ($this->createWeakMap() instanceof WeakMapPhp83) {
+            gc_collect_cycles();
+        }
         self::assertNull($rV->get());
     }
 

@@ -44,11 +44,12 @@ if (\PHP_VERSION_ID >= 8_03_00) {
          *
          * @return TValue
          */
+        #[\ReturnTypeWillChange]
         public function offsetGet($object)
         {
             $this->assertValidKey($object);
 
-            return $this->weakMap->offsetGet($object)->get()/*->get()*/;
+            return $this->weakMap->offsetGet($object)->get()->get();
         }
 
         /**
@@ -59,12 +60,21 @@ if (\PHP_VERSION_ID >= 8_03_00) {
         {
             $this->assertValidKey($object);
 
+            $valueBefore = null;
+            if ($this->weakMap->offsetExists($object)) {
+                $valueBefore = $this->weakMap->offsetGet($object)->get();
+            }
+
             $this->weakMap->offsetSet(
                 $object,
-                /*\WeakReference::create*/(
+                \WeakReference::create(
                     new WeakMapPhp83Value($this->weakMap, $this->destructedEarly, $object, $value)
                 )
             );
+
+            if ($valueBefore !== null) {
+                $valueBefore->destroy();
+            }
         }
 
         /**
@@ -74,7 +84,16 @@ if (\PHP_VERSION_ID >= 8_03_00) {
         {
             $this->assertValidKey($object);
 
+            $valueBefore = null;
+            if ($this->weakMap->offsetExists($object)) {
+                $valueBefore = $this->weakMap->offsetGet($object)->get();
+            }
+
             $this->weakMap->offsetUnset($object);
+
+            if ($valueBefore !== null) {
+                $valueBefore->destroy();
+            }
         }
 
         public function count() : int
@@ -100,7 +119,7 @@ if (\PHP_VERSION_ID >= 8_03_00) {
 
         // NOTE: The native WeakMap does not implement this method,
         // but does forbid serialization.
-        public function __serialize(): void {
+        public function __serialize(): array {
             throw new \Exception("Serialization of 'WeakMap' is not allowed");
         }
 
