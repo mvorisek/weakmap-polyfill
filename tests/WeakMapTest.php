@@ -245,7 +245,7 @@ class WeakMapTest extends TestCase
         unset($k);
         unset($v);
 
-        if (\PHP_MAJOR_VERSION < 8) {
+        if (\PHP_MAJOR_VERSION < 8 || (\PHP_VERSION_ID < 80300 && $this->createWeakMap() instanceof WeakMapPhp83)) {
             self::assertNotNull($r->get());
             gc_collect_cycles();
         }
