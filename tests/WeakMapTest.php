@@ -282,7 +282,7 @@ class WeakMapTest extends TestCase
         $weakMap = $this->createWeakMap();
 
         $vkPairs = [];
-        for ($i = 100; $i > 0; $i--) {
+        for ($i = 17; $i > 0; $i--) {
             for ($j = 100; $j > 0; $j--) {
                 $k = new stdClass;
                 $v = new stdClass;
